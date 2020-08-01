@@ -32,4 +32,4 @@ for submission in reddit.subreddit(subredd).top(limit=10):
         print("-", end='')
     print(submission.title)
     print(submission.url)
-    download(submission.title, submission.url, directory)
+    download(submission.title.replace(' ', '_'), submission.url, directory)
