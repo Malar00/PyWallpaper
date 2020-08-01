@@ -2,11 +2,12 @@ import getopt
 import praw
 import requests
 import sys
+import os
 
 
 def download(title, url, directory):
     reqst = requests.get(url)
-    with open(directory + title, "wb") as file:
+    with open(directory + title + ".jpg", "wb") as file:
         file.write(reqst.content)
 
 
@@ -26,7 +27,8 @@ for op in opts:
         print(op[1])
 
 for submission in reddit.subreddit("wallpapers").top(limit=10):
+    for width in range(os.get_terminal_size()[0]):
+        print("-", end='')
     print(submission.title)
     print(submission.url)
-    print("----------------------------------------------------------------------------")
     download(submission.title, submission.url, directory)
