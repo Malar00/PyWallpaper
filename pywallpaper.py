@@ -16,17 +16,18 @@ reddit = praw.Reddit(client_id="pO9TuXycwz04UQ",
                      user_agent="top 10 wallpapers of the day")
 
 argv = sys.argv[1:]
-opts, args = getopt.getopt(argv, 'l:e:')
+opts, args = getopt.getopt(argv, 'l:r:')
 
-directory ='./'
+directory = './'
+subredd = "wallpapers"
 
 for op in opts:
     if op[0] == '-l':
         directory = op[1]
-    elif op[0] == '-e':
-        print(op[1])
+    elif op[0] == '-r':
+        subredd = op[1]
 
-for submission in reddit.subreddit("wallpapers").top(limit=10):
+for submission in reddit.subreddit(subredd).top(limit=10):
     for width in range(os.get_terminal_size()[0]):
         print("-", end='')
     print(submission.title)
