@@ -27,9 +27,10 @@ for op in opts:
     elif op[0] == '-r':
         subredd = op[1]
 
-for submission in reddit.subreddit(subredd).top(limit=10):
+for submission in reddit.subreddit(subredd).hot(limit=10):
     for width in range(os.get_terminal_size()[0]):
         print("-", end='')
     print(submission.title)
     print(submission.url)
-    download(submission.title.replace(' ', '_'), submission.url, directory)
+    pic_title = submission.title.replace('/', '_')
+    download(pic_title.replace(' ', '_'), submission.url, directory)
