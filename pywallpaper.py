@@ -25,6 +25,14 @@ def cli(directory):
     os.system("wal -i " + directory + wallpapers[choice])
 
 
+def replace_problematic(title):
+    words = ['/', '(', ')', '\"', ' ', '[', ']', ',', '\'']
+    for word in words:
+        title = title.replace(word, '_')
+        print(title)
+    return title
+
+
 reddit = praw.Reddit(client_id="pO9TuXycwz04UQ",
                      client_secret="NaGQ8jNp8KhsNB9gwQAdaiXjX_c",
                      user_agent="top 10 wallpapers of the day")
@@ -49,6 +57,5 @@ for submission in reddit.subreddit(subredd).hot(limit=10):
         print("-", end='')
     print(submission.title)
     print(submission.url)
-    pic_title = submission.title.replace('/', '_')
-    download(pic_title.replace(' ', '_'), submission.url, directory)
-
+    print(replace_problematic(submission.title))
+    download(replace_problematic(submission.title), submission.url, directory)
