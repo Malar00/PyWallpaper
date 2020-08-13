@@ -1,28 +1,37 @@
 import getopt
+import sys
 import praw
 import requests
-import sys
 import os
-
-
-def download(title, url, directory):
-    reqst = requests.get(url)
-    with open(directory + title + ".jpg", "wb") as file:
-        file.write(reqst.content)
-
 
 wallpapers = []
 
+argv = sys.argv[1:]
+opts, args = getopt.getopt(argv, 'l:r:i')
 
-def cli(directory):
-    for filename in os.listdir(directory):
+directory_global = './'
+subredd_global = "wallpapers"
+
+reddit = praw.Reddit(client_id="pO9TuXycwz04UQ",
+                     client_secret="NaGQ8jNp8KhsNB9gwQAdaiXjX_c",
+                     user_agent="top 10 wallpapers of the day")
+
+
+def download(title, url, directory_download):
+    reqst = requests.get(url)
+    with open(directory_download + title + ".jpg", "wb") as file:
+        file.write(reqst.content)
+
+
+def cli(directory_cli):
+    for filename in os.listdir(directory_cli):
         if filename.endswith('jpg'):
             wallpapers.append(filename)
     for wall in wallpapers:
         print(str(wallpapers.index(wall)) + ') ' + wall)
     choice = int(input("choose wallpaper from [0-" + str(len(wallpapers) - 1) + "]: "))
-    os.system("feh --bg-scale " + directory + wallpapers[choice])
-    os.system("wal -i " + directory + wallpapers[choice])
+    os.system("feh --bg-scale " + directory_cli + wallpapers[choice])
+    os.system("wal -i " + directory_cli + wallpapers[choice])
 
 
 def replace_problematic(title):
@@ -32,28 +41,22 @@ def replace_problematic(title):
     return title
 
 
-reddit = praw.Reddit(client_id="pO9TuXycwz04UQ",
-                     client_secret="NaGQ8jNp8KhsNB9gwQAdaiXjX_c",
-                     user_agent="top 10 wallpapers of the day")
+def APIget(directory_api, subredd_api):
+    for submission in reddit.subreddit(subredd_api).hot(limit=10):
+        for width in range(os.get_terminal_size()[0]):
+            print("-", end='')
+        print(submission.title)
+        print(submission.url)
+        download(replace_problematic(submission.title), submission.url, directory_api)
 
-argv = sys.argv[1:]
-opts, args = getopt.getopt(argv, 'l:r:i')
-
-directory = './'
-subredd = "wallpapers"
 
 for op in opts:
     if op[0] == '-l':
-        directory = op[1]
+        directory_global = op[1]
     if op[0] == '-r':
-        subredd = op[1]
+        subredd_global = op[1]
     if op[0] == '-i':
-        cli(directory)
+        cli(directory_global)
         exit()
 
-for submission in reddit.subreddit(subredd).hot(limit=10):
-    for width in range(os.get_terminal_size()[0]):
-        print("-", end='')
-    print(submission.title)
-    print(submission.url)
-    download(replace_problematic(submission.title), submission.url, directory)
+APIget(directory_global, subredd_global)
