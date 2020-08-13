@@ -24,15 +24,19 @@ def download(title, url, directory_download):
 
 
 def cli(directory_cli):
-    for filename in os.listdir(directory_cli):
-        if filename.endswith('jpg'):
-            wallpapers.append(filename)
-    for wall in wallpapers:
-        print(str(wallpapers.index(wall)) + ') ' + wall)
-    choice = int(input("choose wallpaper from [0-" + str(len(wallpapers) - 1) + "]: "))
-    os.system("feh --bg-scale " + directory_cli + wallpapers[choice])
-    os.system("wal -i " + directory_cli + wallpapers[choice])
-
+    try:
+        for filename in os.listdir(directory_cli):
+            if filename.endswith('jpg'):
+                wallpapers.append(filename)
+        for wall in wallpapers:
+            print(str(wallpapers.index(wall)) + ') ' + wall)
+        choice = int(input("choose wallpaper from [0-" + str(len(wallpapers) - 1) + "]: "))
+        os.system("feh --bg-scale " + directory_cli + wallpapers[choice])
+        os.system("wal -i " + directory_cli + wallpapers[choice])
+    except IndexError:
+        print("Error : Incorrect value")
+    except FileNotFoundError:
+        print("Error : Directory doesn't exist")
 
 def replace_problematic(title):
     words = ['/', '(', ')', '\"', ' ', '[', ']', ',', '\'']
