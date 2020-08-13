@@ -29,7 +29,6 @@ def replace_problematic(title):
     words = ['/', '(', ')', '\"', ' ', '[', ']', ',', '\'']
     for word in words:
         title = title.replace(word, '_')
-        print(title)
     return title
 
 
@@ -57,5 +56,4 @@ for submission in reddit.subreddit(subredd).hot(limit=10):
         print("-", end='')
     print(submission.title)
     print(submission.url)
-    print(replace_problematic(submission.title))
     download(replace_problematic(submission.title), submission.url, directory)
